@@ -95,7 +95,7 @@ fi
 
 rand=3
 
-proc_num=$(nproc --all)
+proc_num=$(sysctl -n hw.ncpu)
 if ((proc_num < 2));
 then
 	if ((threads > 5000));
@@ -162,7 +162,8 @@ do
 	else
 		clear
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running updated auto_mhddos_alexnest"
-		bash runner.sh $num_of_copies $threads $rpc $debug # run new downloaded script 
+		bash 
+		.sh $num_of_copies $threads $rpc $debug # run new downloaded script 
 	fi
 	#
    	sleep 3
@@ -259,12 +260,11 @@ do
    	
    	#Just in case kill previous copy of mhddos_proxy
    	echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Killing all old processes with DDoS and finder"
-   	sudo pkill -e -f runner.py
-	sudo pkill -e -f finder.py
+   	sudo pkill -f runner.py
+	sudo pkill -f finder.py
    	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mAll old processes with DDoS and finder killed\033[0;0m\n"
 	
-   	no_ddos_sleep="$(shuf -i 1-3 -n 1)"
-	$ (( no_ddos_sleep=no_ddos_sleep*60 ))
+   	no_ddos_sleep="$((shuf -i 1-3 -n 1)*60)"
    	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[36mSleeping $no_ddos_sleep without DDoS to let your computer cool down...\033[0m\n"
 	sleep $no_ddos_sleep
 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mRESTARTING\033[0m\n"
