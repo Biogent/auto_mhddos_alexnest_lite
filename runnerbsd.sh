@@ -40,9 +40,9 @@ sudo chown -R ${USER}:${USER} /home/${USER}/proxy_finder
 sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest_lite
 sudo git config --global --add safe.directory /home/${USER}/mhddos_proxy
 sudo git config --global --add safe.directory /home/${USER}/proxy_finder
-sudo git config --global --add safe.directory ~/auto_mhddos_alexnest_lite
-sudo git config --global --add safe.directory ~/mhddos_proxy
-sudo git config --global --add safe.directory ~/proxy_finder
+sudo git config --global --add safe.directory /${USER}/auto_mhddos_alexnest_lite
+sudo git config --global --add safe.directory /${USER}/mhddos_proxy
+sudo git config --global --add safe.directory /${USER}/proxy_finder
 
 num_of_copies="${1:-1}"
 if [[ "$num_of_copies" == "all" ]];
