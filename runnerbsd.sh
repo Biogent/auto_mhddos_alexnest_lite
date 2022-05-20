@@ -151,7 +151,7 @@ do
 		sleep 2
 	fi
 	
-	cd ~/auto_mhddos_alexnest
+	cd ~/auto_mhddos_alexnest_lite
    	num=$(sudo git pull origin main | grep -E -c 'Already|Уже|Вже')
    	echo "$num"
    	
