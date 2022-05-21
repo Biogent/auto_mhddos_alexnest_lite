@@ -1,57 +1,45 @@
 #!/bin/bash
 
 #Just in case kill previous copy of mhddos_proxy and finder
-echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Killing all old processes with DDoS and finder"
-sudo pkill -e -f runner.py
-sudo pkill -e -f finder.py
-#sudo docker kill $(sudo docker ps -aqf ancestor=elwahab/dd-attack)
-echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mAll old processes with DDoS and finder killed\033[0;0m\n"
+echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Killing all old processes with MHDDoS and Proxy Finder"
+	sudo pkill -e -f runner.py
+	sudo pkill -e -f finder.py
+echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mThere are no more old processes with MHDDoS and Proxy Finder! Yay! ^_^\033[0;0m\n"
 
-echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling our new proxy_finder...\033[0;0m\n"
-sleep 3s
-cd ~
-sudo rm -rf proxy_finder
-sudo rm -rf mhddos_proxy
-sudo apt install --upgrade git -y
-git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy
-git clone https://github.com/porthole-ascend-cinnamon/proxy_finder
-cd auto_mhddos_alexnest_lite
-git pull --all -f
-cd ~
+#Begin of latest updates
+echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling latest updates...\033[0;0m\n"
+	sleep 3s
+	sudo apt update -y &&  sudo apt upgrade -y
+	sudo apt install --upgrade git -y
+	pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+	cd ~
+		sudo rm -rf proxy_finder
+		sudo rm -rf mhddos_proxy
+		git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy
+		git clone https://github.com/porthole-ascend-cinnamon/proxy_finder
+#End of latest updates
 
+#Begin of latest requirements for tools
 echo -e "\n\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling latest requirements...\033[0;0m\n\n"
-
-sudo apt update -y
-
-sudo apt install curl software-properties-common -y
-sudo add-apt-repository ppa:deadsnakes/ppa -y
-sudo apt install screen python3.10 python3.10-distutils -y
-curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-sudo ln -sf /usr/bin/python3.10 /usr/bin/python3
-
-python3 -m pip install uvloop
-python3 -m pip install --upgrade pip
-
-cd ~/mhddos_proxy
-python3 -m pip install -r requirements.txt
-cd ~/proxy_finder
-python3 -m pip install -r requirements.txt
-cd ~
+	cd ~/mhddos_proxy
+		python3 -m pip install -r requirements.txt
+	cd ~/proxy_finder
+		python3 -m pip install -r requirements.txt
+	cd ~
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[1;32mFiles installed successfully\033[1;0m\n\n"
+#End of latest requirements for tools
 
 restart_interval="20m"
 
-ulimit -n 1048576
-
-sudo chown -R ${USER}:${USER} ~/auto_mhddos_alexnest_lite
-sudo chown -R ${USER}:${USER} /home/${USER}/auto_mhddos_alexnest_lite
-sudo chown -R ${USER}:${USER} ~/mhddos_proxy
-sudo chown -R ${USER}:${USER} /home/${USER}/mhddos_proxy
-sudo chown -R ${USER}:${USER} ~/proxy_finder
-sudo chown -R ${USER}:${USER} /home/${USER}/proxy_finder
-sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest_lite
-sudo git config --global --add safe.directory /home/${USER}/mhddos_proxy
-sudo git config --global --add safe.directory /home/${USER}/proxy_finder
+	sudo chown -R ${USER}:${USER} ~/auto_mhddos_alexnest_lite
+	sudo chown -R ${USER}:${USER} /home/${USER}/auto_mhddos_alexnest_lite
+	sudo chown -R ${USER}:${USER} ~/mhddos_proxy
+	sudo chown -R ${USER}:${USER} /home/${USER}/mhddos_proxy
+	sudo chown -R ${USER}:${USER} ~/proxy_finder
+	sudo chown -R ${USER}:${USER} /home/${USER}/proxy_finder
+	sudo git config --global --add safe.directory /home/${USER}/auto_mhddos_alexnest_lite
+	sudo git config --global --add safe.directory /home/${USER}/mhddos_proxy
+	sudo git config --global --add safe.directory /home/${USER}/proxy_finder
 
 num_of_copies="${1:-1}"
 if [[ "$num_of_copies" == "all" ]];
@@ -100,7 +88,6 @@ then
 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mStarting with parameter --debug (--table is not supported in our script)\033[0;0m\n"
 	debug="--debug"
 fi
-
 
 rand=3
 
@@ -160,17 +147,17 @@ do
 		sleep 2s
 	fi
 	
-	cd ~/auto_mhddos_alexnest
+	cd ~/auto_mhddos_alexnest_lite
    	num=$(sudo git pull origin main | grep -E -c 'Already|Уже|Вже')
    	echo "$num"
    	
    	if ((num == 1));
    	then	
 		clear
-		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running up to date auto_mhddos_alexnest"
+		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running up to date auto_mhddos_alexnest_lite"
 	else
 		clear
-		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running updated auto_mhddos_alexnest"
+		echo -e "[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - Running updated auto_mhddos_alexnest_lite"
 		bash runner.sh $num_of_copies $threads $rpc $debug # run new downloaded script 
 	fi
 	#
