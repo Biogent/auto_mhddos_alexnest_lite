@@ -61,14 +61,14 @@ then
 fi
 
 threads="${2:-1500}"
-if ((threads < 500));
+if ((threads < 1500));
 then
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too LOW amount of threads - attack will be started with 500 threads\033[0;0m\n"
-	threads=500
-elif ((threads > 10000));
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too LOW amount of threads - attack will be started with 1500 threads\033[0;0m\n"
+	threads=1500
+elif ((threads > 50000));
 then
-	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads - attack will be started with 10000 threads\033[0;0m\n"
-	threads=10000
+	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads - attack will be started with 50000 threads\033[0;0m\n"
+	threads=50000
 fi
 
 rpc="${3:-1000}"
@@ -102,10 +102,10 @@ then
 	#rand=$(shuf -i 1-2 -n 1)
 elif ((proc_num >= 2 && proc_num < 4));
 then
-	if ((threads > 9000));
+	if ((threads > 50000));
 	then
-		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for $proc_num CPUs - attack will be started with 9000 threads\033[0;0m\n"
-		threads=9000
+		echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33m$threads is too HIGH amount of threads for $proc_num CPUs - attack will be started with 50000 threads\033[0;0m\n"
+		threads=50000
 	fi
 	#rand=$(shuf -i 1-2 -n 1)
 fi
