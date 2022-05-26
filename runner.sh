@@ -13,7 +13,7 @@ echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling la
 	pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 	cd ~
 		sudo rm -rf mhddos_proxy
-		git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy
+		git clone https://github.com/Biogent/mhddos_proxy
 #End of latest updates
 #...
 #Begin of latest requirements for tools
