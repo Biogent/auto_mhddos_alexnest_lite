@@ -8,7 +8,7 @@ echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;35mThere are no 
 #Begin of latest updates
 echo -e "\n[\033[1;32m$(date +"%d-%m-%Y %T")\033[1;0m] - \033[0;33mInstalling latest updates...\033[0;0m\n"
 	sleep 3s
-	sudo apt update -y &&  sudo apt upgrade -y && sudo apt install --upgrade git -y
+	sudo apt update -y &&  sudo apt upgrade -y
 	#Find outdated pip packages and update it
 	pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 	cd ~
